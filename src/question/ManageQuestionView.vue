@@ -2,14 +2,16 @@
   <div id="manageQuestionView">
     <h2>题目管理</h2>
     <a-table
+      :ref="tableRef"
       :columns="columns"
       :data="dataList"
       :pagination="{
         showTotal: true,
-        pageSize: searchParam.pageSize,
-        current: searchParam.pageNum,
+        pageSize: searchParams.pageSize,
+        current: searchParams.current,
         total,
       }"
+      @page-change="onPageChange"
     >
       <template #optional="{ record }">
         <a-space>
@@ -22,21 +24,24 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { Question, QuestionControllerService } from "../../generated";
 import message from "@arco-design/web-vue/es/message";
+import { useRouter } from "vue-router";
 
 const dataList = ref([]);
 const total = ref(0);
+const tableRef = ref();
+const router = useRouter();
 
-const searchParam = ref({
-  pageSize: 10,
-  pageNum: 1,
+const searchParams = ref({
+  pageSize: 2,
+  current: 1,
 });
 
 const loadData = async () => {
   const res = await QuestionControllerService.listQuestionByPageUsingPost(
-    searchParam.value
+    searchParams.value
   );
   if (res.code === 0) {
     dataList.value = res.data.records;
@@ -46,14 +51,19 @@ const loadData = async () => {
   }
 };
 /**
+ * 监听searchParams变量，改变时触发数据的重新加载
+ */
+watchEffect(() => {
+  loadData();
+});
+/**
  * 页面加载时请求数据
  */
 onMounted(() => {
   loadData();
 });
 
-const show = ref(true);
-
+ref(true);
 const columns = [
   {
     title: "id",
@@ -109,15 +119,28 @@ const doDelete = async (question: Question) => {
   const res = await QuestionControllerService.deleteQuestionUsingPost({
     id: question.id,
   });
-  if (res === 0) {
+  if (res.code === 0) {
     message.success("删除成功");
     loadData();
   } else {
     message.error("删除失败", res.message);
   }
 };
+
 const doUpdate = (question: Question) => {
-  console.log(question);
+  router.push({
+    path: "/update/question",
+    query: {
+      id: question.id,
+    },
+  });
+};
+
+const onPageChange = (page: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: page,
+  };
 };
 </script>
 

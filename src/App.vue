@@ -18,7 +18,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 /**
- * 全局初始化函数，有全局单词调用的代码，都可以写在这里
+ * 全局初始化函数，有全局单次调用的代码，都可以写在这里
  */
 const doInit = () => {
   console.log("你好");
