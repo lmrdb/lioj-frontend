@@ -1,5 +1,11 @@
 # lioj-frontend
 
+## 根据后台接口文档生成代码
+
+```shell
+openapi --input http://localhost:8121/api/v2/api-docs --output ./generated --client axios
+```
+
 ## Project setup
 ```
 npm install

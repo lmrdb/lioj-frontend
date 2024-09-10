@@ -1,6 +1,4 @@
 import { RouteRecordRaw } from "vue-router";
-import HomeView from "@/views/ExampleView.vue";
-import AdminView from "@/views/AdminView.vue";
 import NoAuth from "@/views/NoAuth.vue";
 import ACCESS_ENUM from "@/access/accessEnum";
 import UserLayout from "@/layouts/UserLayout.vue";
@@ -10,6 +8,7 @@ import AddQuestionView from "@/question/AddQuestionView.vue";
 import ManageQuestionView from "@/question/ManageQuestionView.vue";
 import QuestionsView from "@/question/QuestionsView.vue";
 import ViewQuestionView from "@/question/ViewQuestionView.vue";
+import QuestionSubmitView from "@/question/QuestionSubmitView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -38,12 +37,18 @@ export const routes: Array<RouteRecordRaw> = [
     component: QuestionsView,
   },
   {
+    path: "/question_submit",
+    name: "浏览题目提交",
+    component: QuestionSubmitView,
+  },
+  {
     path: "/view/question/:id",
     name: "在线做题",
     component: ViewQuestionView,
     props: true,
     meta: {
       access: ACCESS_ENUM.USER,
+      hideInMenu: true,
     },
   },
   {
